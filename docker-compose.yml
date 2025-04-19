@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  kadmin:
+    build: ./kadmin/
+    image: kerberos-kadmin
+    container_name: kadmin
+    domainname: example.org
+    ports:
+      - "749:749"
+    volumes:
+      - krb5kdc:/etc/krb5kdc
+      - ./kadmin/krb5.conf:/etc/kadmin/krb5.conf # Montage en lecture seule pour plus de sécurité
+    networks:
+      - example
+
+  kdc:
+    build: ./kdc/
+    image: kerberos-kdc
+    container_name: kdc
+    domainname: example.org
+    ports:
+      - "88:88/udp"  # Port KDC obligatoire en UDP
+      - "88:88/tcp"  # Port TCP optionnel
+    volumes:
+      - krb5kdc:/etc/krb5kdc
+      - ./kdc/krb5.conf:/etc/kdc/krb5.conf # Montage en lecture seule pour plus de sécurité
+    networks:
+      - example
+
+volumes:
+  krb5kdc: {}
+
+networks:
+  example:
+    driver: bridge
