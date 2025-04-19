@@ -8,7 +8,7 @@ It has the following components:
 
 # Run
 ```
-docker-compose up
+docker compose up -d --build
 ```
 
 # Administer
